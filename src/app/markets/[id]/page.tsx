@@ -71,7 +71,7 @@ export default async function MarketPage({ params, searchParams }: { params: Pro
       {mine.length ? (
         <>
           <h2>Deine Tipps</h2>
-          <ul>{mine.map((p) => <li key={p.id}>{outcomes.find((o) => o.o.id === p.outcomeId)?.o.label}: {p.stake} Coins · {p.status}{p.payout ? ` · Auszahlung ${p.payout}` : ""}</li>)}</ul>
+          <ul>{mine.map((p) => <li key={p.id}>{outcomes.find((o) => o.o.id === p.outcomeId)?.o.label}: {p.stake} Coins · {{ open: "offen", won: "gewonnen", lost: "verloren", refunded: "zurückerstattet" }[p.status]}{p.payout ? ` · Auszahlung ${p.payout}` : ""}</li>)}</ul>
         </>
       ) : null}
     </>

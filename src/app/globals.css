@@ -60,3 +60,4 @@ button { cursor: pointer; background: var(--accent); color: #fff; border-color: 
 button.secondary { background: transparent; color: var(--text); border-color: var(--border); }
 label { display: block; margin: 8px 0 4px; font-size: 13px; color: var(--muted); }
 .stack > * + * { margin-top: 8px; }
+button:disabled { opacity: .45; cursor: not-allowed; }
