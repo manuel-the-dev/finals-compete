@@ -38,6 +38,13 @@ jobs:
         run: |
           npx drizzle-kit generate --name ci-check
           test -z "$(git status --porcelain drizzle)" || (echo "Schema geändert ohne Migration: npm run db:generate ausführen" && exit 1)
+      - name: Install PostgreSQL 17 client (runner ships 16; pg_dump must match the server)
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSo /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt noble-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update && sudo apt-get install -y postgresql-client-17
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
       - name: Backup and restore round trip
         env:
           TARGET_DATABASE_URL: postgres://fc:fc@localhost:5432/finals_test_restore
