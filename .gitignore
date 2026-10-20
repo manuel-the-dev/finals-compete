@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Secrets: never commit real environment files
+.env
+.env.*
+!.env.example
+
+# Local backup and export output
+backups/
+exports/
+*.dump
+*.sql.gz

@@ -1,0 +1,46 @@
+name: Sync data sources
+
+# Runs every source whose interval has elapsed (intervals are set in /admin/sources).
+# Each source also enforces its own API budget, so running this hourly is safe.
+on:
+  schedule:
+    - cron: "7 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: sync-production
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    # Does nothing until the production environment has a DATABASE_URL.
+    if: ${{ vars.SYNC_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    environment: production
+    timeout-minutes: 20
+    env:
+      APP_ENV: production
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      SOURCE_USER_AGENT: ${{ vars.SOURCE_USER_AGENT }}
+      LIQUIPEDIA_API_KEY: ${{ secrets.LIQUIPEDIA_API_KEY }}
+      LIQUIPEDIA_WIKI: ${{ vars.LIQUIPEDIA_WIKI || 'thefinals' }}
+      FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
+      FACEIT_CHAMPIONSHIP_IDS: ${{ vars.FACEIT_CHAMPIONSHIP_IDS }}
+      YOUTUBE_CHANNELS: ${{ vars.YOUTUBE_CHANNELS }}
+      TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+      TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+      TWITCH_CHANNELS: ${{ vars.TWITCH_CHANNELS }}
+      X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+      X_ACCOUNTS: ${{ vars.X_ACCOUNTS }}
+      X_MAX_POSTS_PER_RUN: ${{ vars.X_MAX_POSTS_PER_RUN || '20' }}
+      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      DISCORD_CHANNELS: ${{ vars.DISCORD_CHANNELS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run sync -- --due

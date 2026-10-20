@@ -1,0 +1,30 @@
+name: Migrate database
+
+# Applies pending migrations to the chosen environment. Configure "Required
+# reviewers" on the GitHub environment "production" so production needs approval.
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Ziel-Umgebung"
+        type: choice
+        options: [preview, production]
+        default: preview
+
+jobs:
+  migrate:
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+    env:
+      APP_ENV: ${{ inputs.environment }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:migrate
+      - run: npx tsx scripts/check-migrations.ts
