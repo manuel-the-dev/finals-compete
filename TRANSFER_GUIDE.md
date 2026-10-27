@@ -116,7 +116,7 @@ Alternative ohne GitHub Actions: Vercel Cron oder ein anderer HTTP-Cron ruft `GE
 
 1. `https://<domain>/api/health` → `"ok": true` und `"env": "production"`.
 2. Startseite, Turniere, Teams, Märkte, News laden ohne Fehler.
-3. Admin anlegen bzw. prüfen: in einem Cloud-Workspace `ADMIN_EMAIL=… ADMIN_PASSWORD=… npm run admin:create` mit der Produktions-`DATABASE_URL`. Einloggen, `/admin` öffnen.
+3. Admin anlegen bzw. prüfen: Secret `ADMIN_PASSWORD` im Environment `production` setzen, Actions → „Create admin“ → Run workflow mit der E-Mail. Einloggen, `/admin` öffnen.
 4. `/admin/sources`: jede genutzte Quelle zeigt „Verbunden“ nach einem Klick auf „Jetzt synchronisieren“ (oder dem nächsten Sync-Lauf). Fehlende Variablen werden dort beim Namen genannt.
 5. GitHub → Actions: „Sync data sources“ und „Backup database“ einmal manuell ausführen, beide grün.
 6. Testkonto registrieren, Startguthaben sichtbar, auf einen offenen Markt tippen, Wallet zeigt den Einsatz.
@@ -152,6 +152,6 @@ Laufende Mindestkosten bei rein nicht-kommerziellem Betrieb mit öffentlichem Re
 - **Neon:** Datenbankpasswort zurücksetzen, neue `DATABASE_URL` eintragen.
 - **Alle API-Zugänge** aus Schritt 6 auf den neuen Eigentümer.
 - **Discord:** Bot neu einladen, Channel-Follows im Server des neuen Eigentümers neu einrichten.
-- **Website-Admins:** Admin-Konten des bisherigen Eigentümers auf `user` zurückstufen (SQL: `UPDATE users SET role='user' WHERE email='…'`) oder löschen; neue Admins mit `npm run admin:create` anlegen.
+- **Website-Admins:** Admin-Konten des bisherigen Eigentümers auf `user` zurückstufen (SQL: `UPDATE users SET role='user' WHERE email='…'`) oder löschen; neue Admins über den Workflow „Create admin“ anlegen.
 - **Benachrichtigungen:** Fehler-E-Mails von GitHub Actions und Vercel gehen an die neuen Eigentümer (Notification-Einstellungen prüfen).
 - **Monitoring:** Ein externer Uptime-Check (z. B. ein kostenloser Uptime-Dienst) auf `/api/health` muss vom neuen Eigentümer neu angelegt werden, falls einer genutzt wurde.

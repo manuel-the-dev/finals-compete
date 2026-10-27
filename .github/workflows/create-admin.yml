@@ -1,0 +1,31 @@
+name: Create admin
+
+# Creates an admin account (or promotes an existing one) without needing a terminal.
+# The password comes from the environment secret ADMIN_PASSWORD, never from the form,
+# so it does not show up in logs.
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "E-Mail-Adresse des Admins"
+        required: true
+        type: string
+
+jobs:
+  create-admin:
+    runs-on: ubuntu-24.04
+    environment: production
+    env:
+      APP_ENV: production
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      ADMIN_EMAIL: ${{ inputs.email }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run admin:create

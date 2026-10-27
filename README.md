@@ -1,5 +1,7 @@
 # FINALS COMPETE
 
+> **Neu hier? Einfache Einrichtungsanleitung auf Deutsch, ohne Programmierkenntnisse: [ANLEITUNG.md](ANLEITUNG.md)**
+
 Hub for the competitive THE FINALS scene: tournaments, teams, matches and results with
 traceable sources, social-media news, and prediction markets with **virtual coins only**.
 
